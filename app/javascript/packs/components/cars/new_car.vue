@@ -6,8 +6,8 @@
         <label class="label">メーカー: {{ car.maker.name }} </label>
         <div class="control">
           <div class="select is-medium">
-            <select v-model="car.maker" class="CarModelSelectList">
-              <option v-for="maker in makers" v-bind:value="maker">
+            <select v-model="car.maker" class="MakerSelectList">
+              <option v-for="maker in makers"  v-bind:value="maker">
                   {{ maker.name }}
               </option>
             </select>
