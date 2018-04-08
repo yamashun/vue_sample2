@@ -1,9 +1,14 @@
 {
   "name": "vue_sample",
   "private": true,
+  "scripts": {
+    "test": "NODE_ENV=testing jest"
+  },
   "dependencies": {
     "@rails/webpacker": "^3.4.1",
     "axios": "^0.18.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
     "vue": "^2.5.16",
     "vue-loader": "^14.2.2",
     "vue-router": "^3.0.1",
@@ -11,6 +16,28 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.13",
+    "babel-jest": "^22.4.3",
+    "jest": "^22.4.3",
+    "vue-jest": "^2.4.0",
     "webpack-dev-server": "2.11.2"
+  },
+  "jest": {
+    "roots": [
+      "client-test/javascript"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "app/javascript/packs"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      ".*\\.(vue)$": "vue-jest"
+    }
   }
 }
