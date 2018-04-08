@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  maker: one
+  maker_name: MyString
+  car_model: one
+  car_model_name: MyString
+  price: 1
+
+two:
+  maker: two
+  maker_name: MyString
+  car_model: two
+  car_model_name: MyString
+  price: 1
