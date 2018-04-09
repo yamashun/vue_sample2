@@ -32,4 +32,42 @@ describe('NewCar.vue', () => {
 
     expect(wrapper.html()).toContain('メーカー: トヨタ')
   })
+
+  it('メーカー、車種が選択されると次へボタンが活性化される', () => {
+    const wrapper = mount(NewCar)
+
+    const button = wrapper.find('button')
+
+    // disabled属性が設定されていること
+    expect(button.element.getAttribute('disabled')).toBe('disabled')
+  
+    // メーカーを設定する
+    wrapper.setData({
+      car: {
+        maker: { name: "トヨタ", id: 1 },
+        model: { name: "", id: null },
+      }
+    })
+
+    // computedへの反映のさせ方は別のやり方がありそう。issueはv-modelの話だが関連してそう。
+    // https://github.com/vuejs/vue-test-utils/issues/514
+    // 一旦はissueにのっている $forceUpdate()を使って回避
+    wrapper.vm.$forceUpdate()
+
+    // メーカのみ設定されている場合はdisabled属性が設定されている
+    expect(button.element.getAttribute('disabled')).toBe('disabled')
+
+    wrapper.setData({
+      car: {
+        maker: { name: "トヨタ", id: 1 },
+        model: { name: "クラウン", id: 2 },
+      }
+    })
+
+    wrapper.vm.$forceUpdate()
+
+    // disabled属性が外れていること
+    expect(button.element.getAttribute('disabled')).toBe(null)
+  })
+
 })

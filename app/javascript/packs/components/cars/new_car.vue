@@ -26,6 +26,7 @@
           </div>
         </div>
       </div>
+      <button class="button is-info is-outlined" :disabled="!isValid">次へ</button>
     </div>
   </div>
 </template>
@@ -66,7 +67,12 @@
       nextPage: function() {
        this.$store.commit('setCar', this.car);
        this.$router.push('/cars/new_price');
-     },
+      },
+    },
+    computed: {
+      isValid: function() {
+        return this.car.maker.id && this.car.model.id
+      }
     },
   }
 </script>
