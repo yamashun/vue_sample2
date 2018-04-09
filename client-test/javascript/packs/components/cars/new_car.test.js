@@ -70,4 +70,44 @@ describe('NewCar.vue', () => {
     expect(button.element.getAttribute('disabled')).toBe(null)
   })
 
+  describe('nextPage', () => {
+    let nextPageMock
+
+    beforeEach(() => {
+      nextPageMock = jest.fn()
+    })
+
+    it('活性化後にクリックするとnextPageが呼ばれる', () => {
+      const wrapper = mount(NewCar)
+      wrapper.setMethods({ nextPage: nextPageMock })
+
+      const button = wrapper.find('button')
+
+      wrapper.setData({
+        car: {
+          maker: { name: "トヨタ", id: 1 },
+          model: { name: "クラウン", id: 2 },
+        }
+      })
+      wrapper.vm.$forceUpdate()
+
+      // クリック前に活性であること
+      expect(button.element.getAttribute('disabled')).toBe(null)
+      button.trigger('click')
+
+      expect(nextPageMock).toHaveBeenCalled()
+    })
+    it('活性化前にクリックしてもnextPageは呼ばれない', () => {
+      const wrapper = mount(NewCar)
+      wrapper.setMethods({ nextPage: nextPageMock })
+
+      const button = wrapper.find('button')
+
+      // クリック前に非活性であること
+      expect(button.element.getAttribute('disabled')).toBe('disabled')
+      button.trigger('click')
+
+      expect(nextPageMock).not.toHaveBeenCalled()
+    })
+  })
 })

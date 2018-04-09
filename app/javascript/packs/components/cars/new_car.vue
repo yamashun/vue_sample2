@@ -26,7 +26,7 @@
           </div>
         </div>
       </div>
-      <button class="button is-info is-outlined" :disabled="!isValid">次へ</button>
+      <button class="button is-info is-outlined" v-on:click="nextPage()" :disabled="!isValid">次へ</button>
     </div>
   </div>
 </template>
@@ -65,8 +65,9 @@
           });
       },
       nextPage: function() {
-       this.$store.commit('setCar', this.car);
-       this.$router.push('/cars/new_price');
+        // console.log('clicked!!!')
+      //  this.$store.commit('setCar', this.car);
+      //  this.$router.push('/cars/new_price');
       },
     },
     computed: {
