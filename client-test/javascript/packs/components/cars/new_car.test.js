@@ -1,5 +1,7 @@
 import { mount } from '@vue/test-utils'
 import NewCar from 'components/cars/new_car'
+import { makersResponse, modelsResponse } from '../../../test-helpers/mock/car_new'
+jest.mock('axios', () => require('../../../test-helpers/mock/car_new.js'))
 
 describe('NewCar.vue', () => {
   it('タイトルが表示できる', () => {
@@ -70,6 +72,29 @@ describe('NewCar.vue', () => {
     expect(button.element.getAttribute('disabled')).toBe(null)
   })
 
+  it('メーカーが選択されると fetchCarModels が呼ばれる', (done) => {
+    delete NewCar.mounted
+
+    const wrapper = mount(NewCar)
+    wrapper.setData(makersResponse.data)
+
+    expect(wrapper.vm.models).not.toEqual(modelsResponse.data.car_models)
+
+    const select = wrapper.find('.MakerSelectList')
+
+    // https://github.com/vuejs/vue-test-utils/issues/128
+    // https://github.com/ariera/vue-test-utils/commit/8e7d5243ad5fdc0036f840981326433033ff5837#comments
+    select.element.value = 1
+    wrapper.vm.$forceUpdate()
+
+    select.trigger('change')
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.models).toEqual(modelsResponse.data.car_models)
+      done()
+    })
+  })
+
   describe('nextPage', () => {
     let nextPageMock
 
@@ -97,6 +122,7 @@ describe('NewCar.vue', () => {
 
       expect(nextPageMock).toHaveBeenCalled()
     })
+
     it('活性化前にクリックしてもnextPageは呼ばれない', () => {
       const wrapper = mount(NewCar)
       wrapper.setMethods({ nextPage: nextPageMock })

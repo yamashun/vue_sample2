@@ -6,8 +6,8 @@
         <label class="label">メーカー: {{ car.maker.name }} </label>
         <div class="control">
           <div class="select is-medium">
-            <select v-model="car.maker" class="MakerSelectList">
-              <option v-for="maker in makers"  v-bind:value="maker">
+            <select v-model="car.maker.id" class="MakerSelectList" @change="setMaker">
+              <option v-for="maker in makers" v-bind:value="maker.id">
                   {{ maker.name }}
               </option>
             </select>
@@ -18,8 +18,8 @@
         <label class="label">車種: {{ car.model ? car.model.name : "" }}</label>
         <div class="control">
           <div class="select is-medium">
-            <select v-model="car.model" class="CarModelSelectList" >
-              <option v-for="model in models" v-bind:value="model">
+            <select v-model="car.model.id" class="CarModelSelectList" @change="setModel" >
+              <option v-for="model in models" v-bind:value="model.id">
                   {{ model.name }}
               </option>
             </select>
@@ -34,6 +34,7 @@
 // javascript
 <script>
   import axios from 'axios';
+  import { find } from "lodash";
   export default {
     data: function () {
       return {
@@ -41,39 +42,45 @@
           maker: { name: "", id: null },
           model: { name: "", id: null },
         },
-        makers: [{ id: 1, name: "トヨタ" }],
-        models: [
-          {id: 1, name: "カローラ"},
-          {id: 2, name: "クラウン"},
-          {id: 3, name: "86"},
-        ],
+        makers: [],
+        models: [],
       }
     },
+    mounted: function() {
+      this.fetchMakers();
+    },
     methods: {
-      fetchMakers: function () {
-        axios.get(`../api/makers`)
-          .then(res => {
-            this.makers = res.data.makers;
-            console.log(this.makers)
-          });
+      setMaker: function() {
+        let maker = find(this.makers, elm => ( elm.id === this.car.maker.id))
+        if(maker) {
+          this.car.maker.name = maker.name
+          this.fetchModels()
+        }
       },
-      fetchModels: function () {
-        axios.get(`../api/car_models/${this.car.maker.id}`)
-          .then(res => {
-            this.models = res.data.car_models;
-            console.log(this.models)
-          });
+      setModel: function() {
+        let model = find(this.models, elm => ( elm.id === this.car.model.id))
+        if(model) {
+          this.car.model.name = model.name
+        }
+      },
+      async fetchMakers () {
+        const res = await axios.get(`../api/makers`)
+        this.makers = res.data.makers;
+      },
+      async fetchModels () {
+        const res = await axios.get(`../api/car_models/${this.car.maker.id}`)
+        this.models = res.data.car_models;
       },
       nextPage: function() {
-        // console.log('clicked!!!')
-      //  this.$store.commit('setCar', this.car);
-      //  this.$router.push('/cars/new_price');
+        //  console.log('clicked!!!');
+        //  this.$store.commit('setCar', this.car);
+        //  this.$router.push('/cars/new_price');
       },
     },
     computed: {
       isValid: function() {
         return this.car.maker.id && this.car.model.id
-      }
+      },
     },
   }
 </script>
