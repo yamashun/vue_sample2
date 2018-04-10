@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import NewCar from 'components/cars/new_car'
 import { makersResponse, modelsResponse } from '../../../test-helpers/mock/car_new'
 jest.mock('axios', () => require('../../../test-helpers/mock/car_new.js'))
+import flushPromises from 'flush-promises'
 
 describe('NewCar.vue', () => {
   it('タイトルが表示できる', () => {
@@ -72,13 +73,11 @@ describe('NewCar.vue', () => {
     expect(button.element.getAttribute('disabled')).toBe(null)
   })
 
-  it('メーカーが選択されると fetchCarModels が呼ばれる', (done) => {
-    delete NewCar.mounted
-
+  it('メーカーが選択されると fetchCarModels が呼ばれる', async () => {
     const wrapper = mount(NewCar)
-    wrapper.setData(makersResponse.data)
 
-    expect(wrapper.vm.models).not.toEqual(modelsResponse.data.car_models)
+    await flushPromises()
+    expect(wrapper.vm.makers).toEqual(makersResponse.data.makers)
 
     const select = wrapper.find('.MakerSelectList')
 
@@ -89,10 +88,8 @@ describe('NewCar.vue', () => {
 
     select.trigger('change')
 
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.models).toEqual(modelsResponse.data.car_models)
-      done()
-    })
+    await flushPromises()
+    expect(wrapper.vm.models).toEqual(modelsResponse.data.car_models)
   })
 
   describe('nextPage', () => {
